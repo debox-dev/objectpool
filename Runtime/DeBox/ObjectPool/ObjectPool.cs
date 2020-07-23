@@ -37,6 +37,7 @@ namespace DeBox.ObjectPool
                 if (_singletonInstance == null)
                 {
                     var instance = new GameObject("ObjectPoolManager");
+                    DontDestroyOnLoad(instance);
                     instance.hideFlags = HideFlags.HideAndDontSave;
                     instance.SetActive(false);
                     _singletonInstance = instance.AddComponent<GameObjectPoolManager>();
