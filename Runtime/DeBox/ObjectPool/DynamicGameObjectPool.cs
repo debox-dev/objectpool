@@ -93,7 +93,7 @@ namespace DeBox.ObjectPool
         protected override void OnRevert(GameObject obj)
         {
             base.OnRevert(obj);
-            var pooledComponents = gameObject.GetComponents<IPooledComponent>();
+            var pooledComponents = obj.GetComponents<IPooledComponent>();
             foreach (var pooledComponent in pooledComponents)
             {
                 pooledComponent.OnRevert();
