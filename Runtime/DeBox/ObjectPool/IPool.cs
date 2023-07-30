@@ -18,6 +18,11 @@
 		/// </summary>
 		/// <param name="obj">Returned instance of type T</param>
 		void Revert(T obj);
-	}
+
+        /// <summary>
+        /// Revert all borrowed instances
+        /// </summary>
+        void RevertAll();
+    }
 
 }

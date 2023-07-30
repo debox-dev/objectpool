@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DeBox.ObjectPool
 {
@@ -120,6 +121,15 @@ namespace DeBox.ObjectPool
             return obj;
         }
 
+        public void RevertAll()
+        {
+            var allBorrowedInstances = _borrowed.ToArray();
+            foreach (var borrowedInstance in allBorrowedInstances)
+            {
+                Revert(borrowedInstance);   
+            }
+        }
+        
         /// <summary>
         /// Revert a borrowed instance
         /// </summary>
@@ -128,9 +138,16 @@ namespace DeBox.ObjectPool
         {
             
             // Verify its a borrowed object and remove it from the borrowed set
-            OnRevert(obj);
+            var canReturnToPool = PreRevert(obj);
             _borrowed.Remove(obj);
-            _pool.Add(obj);
+            if (canReturnToPool)
+            {
+                _pool.Add(obj);
+            }
+            else
+            {
+                PreCache(1);
+            }
         }
 
         /// <summary>
@@ -148,8 +165,10 @@ namespace DeBox.ObjectPool
         /// For example: Reset values, free memory, etc..
         /// </summary>
         /// <param name="obj"></param>
-        protected virtual void OnRevert(T obj)
+        /// <returns>Whether the instance is uncorrupted and can be put back into the pool</returns>
+        protected virtual bool PreRevert(T obj)
         {
+            return true;
         }
 
     }

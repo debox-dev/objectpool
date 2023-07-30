@@ -86,19 +86,28 @@ namespace DeBox.ObjectPool
 
 
 		/// <summary>
-		/// Override for the OnRevert of the base class. Resets the parent of the returned instance to the
+		/// Override for the PreRevert of the base class. Resets the parent of the returned instance to the
 		/// pool container transform
 		/// </summary>
 		/// <param name="obj">Returned instance GameObject</param>
-        protected override void OnRevert(GameObject obj)
+        protected override bool PreRevert(GameObject obj)
         {
-            base.OnRevert(obj);
+            if (!base.PreRevert(obj))
+            {
+                return false;
+            }
+            if (obj == null)
+            {
+                Debug.LogError($"Tried reverting a game-object into an object-pool, but it has been destroyed.");
+                return false;
+            }            
             var pooledComponents = obj.GetComponents<IPooledComponent>();
             foreach (var pooledComponent in pooledComponents)
             {
                 pooledComponent.OnRevert();
             }
             obj.transform.SetParent(_parent, true);
+            return true;
         }
 
 		/// <summary>
