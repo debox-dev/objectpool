@@ -55,5 +55,10 @@ namespace DeBox.ObjectPool
         {
             _internalPool.Revert(obj);
         }
+
+        public void RevertAll()
+        {
+            _internalPool.RevertAll();
+        }
     }
 }

@@ -201,6 +201,14 @@ namespace DeBox.ObjectPool
             Revert(poolPrefab.SourcePrefab, instance);
         }
 
+        public static void RevertAll()
+        {
+            foreach (var pool in Main._pools.Values)
+            {
+                pool.RevertAll();
+            }
+        }
+
         public static void SetMaxPoolSize(GameObject prefab, int maxSize)
         {
             Main._setMaxPoolSize(prefab, maxSize);
