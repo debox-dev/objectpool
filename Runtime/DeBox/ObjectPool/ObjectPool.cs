@@ -180,6 +180,11 @@ namespace DeBox.ObjectPool
 
         public static void Revert(MonoBehaviour instance)
         {
+            if (instance?.gameObject == null)
+            {
+                Debug.LogError($"Could not revert MonoBehaviour {instance}; Aborting revert.");
+                return;
+            }            
             Revert(instance.gameObject);
         }
 
@@ -197,7 +202,11 @@ namespace DeBox.ObjectPool
 
         public static void Revert(GameObject instance)
         {
-            PoolPrefab poolPrefab = instance.GetComponent<PoolPrefab>();
+            PoolPrefab poolPrefab = instance?.GetComponent<PoolPrefab>();
+            if (poolPrefab == null)
+            {
+                Debug.LogError($"Could not revert GameObject {instance}. Aborting");
+            }
             Revert(poolPrefab.SourcePrefab, instance);
         }
 
@@ -229,7 +238,20 @@ namespace DeBox.ObjectPool
         }
 
         private void _revert(GameObject prefab, GameObject instance)
-        {            
+        {
+            if (prefab == null || instance == null)
+            {
+                Debug.LogError($"Could not revert {prefab}/{instance}. Aborting.");
+                return;
+            }
+
+            if (instance != null)
+            {
+                foreach (var behaviour in instance.GetComponents<MonoBehaviour>())
+                {
+                    behaviour.StopAllCoroutines();
+                }
+            }
             GetPoolFor(prefab).Revert(instance);
         }
 
